@@ -1,20 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/20 17:20:56 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/20 17:29:28 by zaalrafa         ###   ########.fr       */
+/*   Created: 2026/01/21 14:34:44 by zaalrafa          #+#    #+#             */
+/*   Updated: 2026/01/21 14:35:58 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../fdf.h"
-#include <fcntl.h>
 
-read_file(char *file)
+void	free_pixel_row(t_pixel *p)
 {
-	int	fd;
+	t_pixel	*tmp;
 
-	fd = open(file, O_RDONLY);
+	while (p)
+	{
+		tmp = p->next;
+		free(p);
+		p = tmp;
+	}
+}
+
+void	free_matrix(t_matrix *m)
+{
+	t_matrix	*tmp;
+
+	while (m)
+	{
+		tmp = m->next;
+		free_pixel_row(m->node);
+		free(m);
+		m = tmp;
+	}
+}
+
+void	free_split(char **arr)
+{
+	char	**save;
+
+	if (!arr)
+		return ;
+	save = arr;
+	while (*arr)
+	{
+		free(*arr);
+		arr++;
+	}
+	free(save);
 }
