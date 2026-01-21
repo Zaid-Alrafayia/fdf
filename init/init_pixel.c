@@ -30,7 +30,7 @@ t_pixel	*new_pixel(int x, int y, int z)
 	node->x = x;
 	node->y = y;
 	node->z = z;
-	node->color = 0xfffff;
+	node->color = 0xFFFFFF;
 	node->next = NULL;
 	return (node);
 }

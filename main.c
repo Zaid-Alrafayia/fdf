@@ -6,11 +6,13 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 00:38:42 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/21 14:51:40 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/21 17:30:26 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include "minilibx-linux/mlx.h"
+#include <stdio.h>
 
 void	print_pixel_row(t_pixel *p)
 {
@@ -49,7 +51,18 @@ int	main(int argc, char **argv)
 {
 	t_matrix	*matrix;
 	int			fd;
+	void		*mlx;
+	void		*mlx_win;
+	int			xy[2];
 
+	xy[0] = 1080;
+	xy[1] = 900;
+	mlx = mlx_init();
+	if (!mlx)
+	{
+		perror("ERROR: can't make window.\n");
+		return (0);
+	}
 	validate(argc, argv[1]);
 	matrix = NULL;
 	fd = open(argv[1], O_RDONLY);
@@ -58,7 +71,11 @@ int	main(int argc, char **argv)
 		perror("file not found");
 		return (1);
 	}
-	init_matrix(&matrix, fd);
+	init_matrix(&matrix, fd, xy);
+	mlx_win = mlx_new_window(mlx, xy[0], xy[1], argv[1]);
+	put_matrix(&matrix, mlx, mlx_win);
+	mlx_loop(mlx);
+	(void)mlx_win;
 	close(fd);
 	free_matrix(matrix);
 	return (0);

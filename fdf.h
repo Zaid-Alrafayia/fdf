@@ -6,12 +6,13 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:17:50 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/21 14:35:49 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/21 17:21:19 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef FDF_H
 # define FDF_H
 # include "libft/libft.h"
+# include "minilibx-linux/mlx.h"
 # include <fcntl.h>
 # include <limits.h>
 # include <math.h>
@@ -39,7 +40,7 @@ int					validate_map(char *file);
 int					validate(int argc, char *file);
 
 // init_matrix_c
-void				init_matrix(t_matrix **matrix, int fd);
+void				init_matrix(t_matrix **matrix, int fd, int xy[2]);
 
 // init_pixel_c
 t_pixel				*new_pixel(int x, int y, int z);
@@ -49,4 +50,8 @@ int					add_to_back(t_pixel **row, int x, int y, char *z);
 void				free_pixel_row(t_pixel *p);
 void				free_matrix(t_matrix *m);
 void				free_split(char **arr);
+
+// pixel_gen_c
+void				put_matrix(t_matrix **matrix, void *mlx, void *mlx_win);
+
 #endif // !FDF_H
