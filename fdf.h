@@ -6,9 +6,10 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:17:50 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/21 17:21:19 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 18:23:43 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef FDF_H
 # define FDF_H
 # include "libft/libft.h"
@@ -19,6 +20,7 @@
 # include <stddef.h>
 # include <stdio.h>
 # include <stdlib.h>
+
 
 typedef struct s_pixel
 {
@@ -34,6 +36,15 @@ typedef struct s_matrix
 	t_pixel			*node;
 	struct s_matrix	*next;
 }					t_matrix;
+typedef struct s_fdf
+{
+	void		*mlx;
+	void		*mlx_win;
+	t_matrix	*matrix;
+	int			win_width;
+	int			win_height;
+}				t_fdf;
+
 // parse_c
 int					validate_file_type(char *file);
 int					validate_map(char *file);

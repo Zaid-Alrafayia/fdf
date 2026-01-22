@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 00:38:42 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/21 17:30:26 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 16:39:04 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int	main(int argc, char **argv)
 	void		*mlx;
 	void		*mlx_win;
 	int			xy[2];
-
 	xy[0] = 1080;
 	xy[1] = 900;
 	mlx = mlx_init();
@@ -71,12 +70,11 @@ int	main(int argc, char **argv)
 		perror("file not found");
 		return (1);
 	}
-	init_matrix(&matrix, fd, xy);
+	init_matrix(&matrix, fd);
 	mlx_win = mlx_new_window(mlx, xy[0], xy[1], argv[1]);
+	print_matrix(matrix);
 	put_matrix(&matrix, mlx, mlx_win);
-	mlx_loop(mlx);
-	(void)mlx_win;
-	close(fd);
 	free_matrix(matrix);
+	mlx_loop(mlx);
 	return (0);
 }

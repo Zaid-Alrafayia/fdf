@@ -6,9 +6,10 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 12:05:38 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/21 17:21:56 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:46:00 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../fdf.h"
 #include <stdlib.h>
 
@@ -48,8 +49,11 @@ void	init_matrix(t_matrix **matrix, int fd)
 	char	**save;
 	t_pixel	*row;
 
+
 	coordinates[1] = 0;
 	row = NULL;
+	str = NULL;
+	printf("fd : %d\n", fd);
 	str = get_next_line(fd);
 	while (str)
 	{
@@ -59,6 +63,7 @@ void	init_matrix(t_matrix **matrix, int fd)
 		free(str);
 		while (*arr)
 		{
+			
 			if (add_to_back(&row, coordinates[0], coordinates[1], *arr))
 			{
 				free_split(save);
@@ -73,4 +78,5 @@ void	init_matrix(t_matrix **matrix, int fd)
 		free_split(save);
 		str = get_next_line(fd);
 	}
+	close(fd);
 }

@@ -1,14 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:20:56 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/20 17:29:28 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:38:13 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 #include "../fdf.h"
 #include <stddef.h>
 #include <stdlib.h>
@@ -39,8 +41,6 @@ int	validate_file_type(char *file)
 int	validate_map(char *file)
 {
 	int		fd;
-	size_t	size;
-	size_t	len;
 	char	*line;
 
 	fd = open(file, O_RDONLY);
@@ -52,17 +52,19 @@ int	validate_map(char *file)
 		map_error(fd, NULL, "ERROR: map is empty.");
 		return (-1);
 	}
-	len = ft_strlen(line);
-	size = 0;
-	while (line && len == ft_strlen(line))
+	while (line)
 	{
-		size += len;
 		free(line);
 		line = get_next_line(fd);
+		if (!line)
+			break ;
 	}
+	if (line)
+		free(line);
 	close(fd);
-	return ((int)size);
+	return (1);
 }
+
 
 int	validate(int argc, char *file)
 {
