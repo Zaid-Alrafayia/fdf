@@ -6,13 +6,14 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 00:38:42 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 16:39:04 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 20:10:39 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include "minilibx-linux/mlx.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void	print_pixel_row(t_pixel *p)
 {
@@ -47,17 +48,31 @@ void	print_matrix(t_matrix *m)
 	}
 }
 
+t_fdf	*init_fdf(void)
+{
+	t_fdf	*fdf;
+
+	fdf = (t_fdf *)malloc(sizeof(t_fdf));
+	if (!fdf)
+		return (NULL);
+	fdf->win_height = 1080;
+	fdf->win_width = 900;
+	fdf->mlx = NULL;
+	fdf->mlx_win = NULL;
+	fdf->matrix = NULL;
+	fdf->color = 0xFFFFFF;
+	return (fdf);
+}
+
 int	main(int argc, char **argv)
 {
 	t_matrix	*matrix;
+	t_fdf		*fdf;
 	int			fd;
-	void		*mlx;
-	void		*mlx_win;
-	int			xy[2];
-	xy[0] = 1080;
-	xy[1] = 900;
-	mlx = mlx_init();
-	if (!mlx)
+
+	fdf = init_fdf();
+	fdf->mlx = mlx_init();
+	if (!fdf->mlx)
 	{
 		perror("ERROR: can't make window.\n");
 		return (0);
@@ -70,11 +85,11 @@ int	main(int argc, char **argv)
 		perror("file not found");
 		return (1);
 	}
-	init_matrix(&matrix, fd);
-	mlx_win = mlx_new_window(mlx, xy[0], xy[1], argv[1]);
-	print_matrix(matrix);
-	put_matrix(&matrix, mlx, mlx_win);
-	free_matrix(matrix);
-	mlx_loop(mlx);
+	init_matrix(&fdf, fd);
+	fdf->mlx_win = mlx_new_window(fdf->mlx, fdf->win_width, fdf->win_height,
+			argv[1]);
+	put_matrix(&matrix, fdf->mlx, fdf->mlx_win);
+	free_matrix(fdf->matrix);
+	mlx_loop(fdf->mlx);
 	return (0);
 }
