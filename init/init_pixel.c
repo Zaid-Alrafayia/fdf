@@ -6,11 +6,12 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 13:34:07 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 17:47:27 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 21:15:36 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../fdf.h"
+
 static int	check_overflow(int num)
 {
 	if (num > INT_MAX || num < INT_MIN)
@@ -35,17 +36,17 @@ t_pixel	*new_pixel(int x, int y, int z)
 	return (node);
 }
 
-
-
 int	add_to_back(t_pixel **row, int x, int y, char *z)
 {
 	t_pixel	*tmp;
 	t_pixel	*tail;
-	int		color = 0xf23f23;
+	int		color;
+	char	*color_str;
 
+	color = 0xf23f23;
 	if (ft_strrchr(z, ','))
 	{
-		char	*color_str = ft_strrchr(z, ',') + 1;
+		color_str = ft_strrchr(z, ',') + 1;
 		color = (int)ft_hexatoi(color_str);
 		z[ft_strchr(z, ',') - z] = '\0';
 		if (check_overflow(ft_atoi(z)))

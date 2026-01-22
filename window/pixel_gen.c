@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 17:22:56 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 18:05:01 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 21:18:35 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,23 @@
 # define M_PI 3.14159265358979323846
 #endif
 
-static void project_iso(int gx, int gy, int gz, int scale, int height, int ox, int oy, int *sx, int *sy)
+static void	project_iso(int gx, int gy, int gz,	t_fdf **fdf, int ox,
+		int oy, int *sx, int *sy)
 {
-	
-	int px;
-	int py;
-double x = (double)gx * scale;
-double y = (double)gy * scale;
-double z = (double)gz * height;
-const double ang = M_PI / 6.0;
-	px = (x - y) * cos(ang);
-	py = (x + y) * sin(ang) - z;
-*sx = (int)(px + ox);
-*sy = (int)(py + oy);
+	int				px;
+	int				py;
+	double			xyz[3];
+	const double	ang = M_PI / 6.0;
+
+	xyz[0] = (double)gx * (*fdf)->scale;
+	xyz[1] = (double)gy * (*fdf)->scale;
+	xyz[2] = (double)gz * (*fdf)->height_scale;
+	px = (xyz[0] - xyz[1]) * cos(ang);
+	py = (xyz[0] + xyz[1]) * sin(ang) - xyz[2];
+	*sx = (int)(px + ox);
+	*sy = (int)(py + oy);
 }
+
 void	drawline(void *mlx, void *mlx_win, int x0, int y0, int x1, int y1,
 		int color)
 {
@@ -65,61 +68,73 @@ void	drawline(void *mlx, void *mlx_win, int x0, int y0, int x1, int y1,
 		}
 	}
 }
-void	put_row(t_pixel **head, void *mlx, void *mlx_win)
-{
-	t_pixel	*tmp;
-	int		sx;
-	int		sy;
-	int		prev_set;
-	int		px;
-	int		py;
 
-	prev_set = 0;
-	px = 0;
-	py = 0;
-	if (!head || !*head)
-		return ;
-	tmp = *head;
-	while (tmp)
+static t_pixel	*get_pixel_at(t_matrix *matrix, int y, int x)
+{
+	int		i;
+	t_pixel	*pixel;
+
+	i = 0;
+	while (y > 0 && matrix)
 	{
-		project_iso(tmp->x, tmp->y, tmp->z, 5, 5, 200, 300, &sx, &sy);
-		if (prev_set)
-			drawline(mlx, mlx_win, px, py, sx, sy, tmp->color);
-		mlx_pixel_put(mlx, mlx_win, sx, sy, tmp->color);
-		px = sx;
-		py = sy;
-		prev_set = 1;
-		tmp = tmp->next;
+		matrix = matrix->next;
+		y--;
+	}
+	if (!matrix)
+		return (NULL);
+	pixel = matrix->node;
+	while (i < x && pixel)
+	{
+		pixel = pixel->next;
+		i++;
+	}
+	return (pixel);
+}
+
+static void	draw_neighbors(t_fdf **fdf, int y, int x)
+{
+	t_pixel	*curr;
+	t_pixel	*right;
+	t_pixel	*below;
+	int		sxy[4];
+
+	curr = get_pixel_at((*fdf)->matrix, y, x);
+	right = get_pixel_at((*fdf)->matrix, y, x + 1);
+	below = get_pixel_at((*fdf)->matrix, y + 1, x);
+	if (curr && right)
+	{
+		project_iso(curr->x, curr->y, curr->z, fdf, 200, 300, &sxy[0],
+			&sxy[1]);
+		project_iso(right->x, right->y, right->z, fdf, 200, 300, &sxy[2],
+			&sxy[3]);
+		drawline((*fdf)->mlx, (*fdf)->mlx_win, sxy[0], sxy[1], sxy[2], sxy[3],
+			curr->color);
+	}
+	if (curr && below)
+	{
+		project_iso(curr->x, curr->y, curr->z, fdf, 200, 300, &sxy[0],
+			&sxy[1]);
+		project_iso(below->x, below->y, below->z, fdf, 200, 300, &sxy[2],
+			&sxy[3]);
+		drawline((*fdf)->mlx, (*fdf)->mlx_win, sxy[0], sxy[1], sxy[2], sxy[3],
+			curr->color);
 	}
 }
 
-void	put_matrix(t_matrix **matrix, void *mlx, void *mlx_win)
+void	put_matrix(t_fdf **fdf)
 {
-	t_pixel		*row;
-	t_matrix	*tmp;
-	t_pixel		*nrow;
-	t_pixel		*r;
+	int	y;
+	int	x;
 
-	tmp = *matrix;
-	while (tmp)
+	y = 0;
+	while (y < (*fdf)->matrix_height)
 	{
-		row = tmp->node;
-		put_row(&row, mlx, mlx_win);
-		if (tmp->next)
+		x = 0;
+		while (x < (*fdf)->matrix_width)
 		{
-			nrow = tmp->next->node;
-			r = tmp->node;
-			while (r && nrow)
-			{
-				int sx, sy, sx2, sy2;
-				project_iso(r->x, r->y, r->z, 5, 5, 200, 300, &sx, &sy);
-				project_iso(nrow->x, nrow->y, nrow->z, 5, 5, 200, 300, &sx2,
-					&sy2);
-				drawline(mlx, mlx_win, sx, sy, sx2, sy2, r->color);
-				r = r->next;
-				nrow = nrow->next;
-			}
+			draw_neighbors(fdf, y, x);
+			x++;
 		}
-		tmp = tmp->next;
+		y++;
 	}
 }

@@ -6,10 +6,9 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:20:56 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 17:38:13 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 20:45:43 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../fdf.h"
 #include <stddef.h>
@@ -38,11 +37,17 @@ int	validate_file_type(char *file)
 	return (0);
 }
 
-int	validate_map(char *file)
+int	validate_map(char *file, int *width, int *height)
 {
 	int		fd;
 	char	*line;
+	char	**arr;
+	int		row_width;
+	int		first_width;
 
+	first_width = -1;
+	*width = 0;
+	*height = 0;
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (0);
@@ -54,21 +59,33 @@ int	validate_map(char *file)
 	}
 	while (line)
 	{
+		arr = ft_split(line, ' ');
+		row_width = 0;
+		while (arr[row_width])
+			row_width++;
+		if (first_width == -1)
+			first_width = row_width;
+		else if (row_width != first_width)
+		{
+			free_split(arr);
+			free(line);
+			close(fd);
+			ft_printf("ERROR: map is not rectangular.\n");
+			return (0);
+		}
+		(*height)++;
+		free_split(arr);
 		free(line);
 		line = get_next_line(fd);
-		if (!line)
-			break ;
 	}
-	if (line)
-		free(line);
+	*width = first_width;
 	close(fd);
 	return (1);
 }
 
-
-int	validate(int argc, char *file)
+int	validate(int argc, char *file, int *width, int *height)
 {
-	int	malloc_size;
+	int	valid;
 
 	if (argc != 2)
 	{
@@ -77,13 +94,13 @@ int	validate(int argc, char *file)
 	}
 	if (validate_file_type(file))
 		return (0);
-	malloc_size = validate_map(file);
-	if (!malloc_size)
+	valid = validate_map(file, width, height);
+	if (!valid)
 	{
-		ft_printf("ERROR: map invalid.");
+		ft_printf("ERROR: map invalid.\n");
 		return (0);
 	}
-	else if (malloc_size == -1)
+	else if (valid == -1)
 		return (0);
 	return (1);
 }

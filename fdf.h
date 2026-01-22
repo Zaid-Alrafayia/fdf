@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:17:50 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 20:05:16 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 21:27:08 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,18 @@ typedef struct s_fdf
 	int				win_width;
 	int				win_height;
 	int				color;
+	int				matrix_width;
+	int				matrix_height;
+	int				scale;
+	int				height_scale;
+	int				z_min;
+	int				z_max;
 }					t_fdf;
 
 // parse_c
 int					validate_file_type(char *file);
-int					validate_map(char *file);
-int					validate(int argc, char *file);
+int					validate(int argc, char *file, int *width, int *height);
+int					validate_map(char *file, int *width, int *height);
 
 // init_matrix_c
 void				init_matrix(t_fdf **fdf, int fd);
@@ -63,6 +69,7 @@ void				free_matrix(t_matrix *m);
 void				free_split(char **arr);
 
 // pixel_gen_c
-void				put_matrix(t_matrix **matrix, void *mlx, void *mlx_win);
-
+void				put_matrix(t_fdf **fdf);
+// scaling_c
+void				set_scaling(t_fdf **fdf);
 #endif // !FDF_H

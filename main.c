@@ -6,11 +6,12 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 00:38:42 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 20:10:39 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/22 21:30:53 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include "libft/libft.h"
 #include "minilibx-linux/mlx.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,15 +61,20 @@ t_fdf	*init_fdf(void)
 	fdf->mlx = NULL;
 	fdf->mlx_win = NULL;
 	fdf->matrix = NULL;
+	fdf->matrix_height = 0;
+	fdf->matrix_width = 0;
 	fdf->color = 0xFFFFFF;
+	fdf->scale = 5;
+	fdf->height_scale = 5;
+	fdf->z_min = INT_MAX;
+	fdf->z_max = INT_MIN;
 	return (fdf);
 }
 
 int	main(int argc, char **argv)
 {
-	t_matrix	*matrix;
-	t_fdf		*fdf;
-	int			fd;
+	t_fdf	*fdf;
+	int		fd;
 
 	fdf = init_fdf();
 	fdf->mlx = mlx_init();
@@ -77,8 +83,8 @@ int	main(int argc, char **argv)
 		perror("ERROR: can't make window.\n");
 		return (0);
 	}
-	validate(argc, argv[1]);
-	matrix = NULL;
+	validate(argc, argv[1], &fdf->matrix_width, &fdf->matrix_height);
+	ft_printf("width= %d\nheight= %d", fdf->matrix_width, fdf->matrix_height);
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
 	{
@@ -86,9 +92,10 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	init_matrix(&fdf, fd);
+	set_scaling(&fdf);
 	fdf->mlx_win = mlx_new_window(fdf->mlx, fdf->win_width, fdf->win_height,
 			argv[1]);
-	put_matrix(&matrix, fdf->mlx, fdf->mlx_win);
+	put_matrix(&fdf);
 	free_matrix(fdf->matrix);
 	mlx_loop(fdf->mlx);
 	return (0);
