@@ -40,7 +40,7 @@ static void	add_to_matrix(t_matrix **matrix, t_pixel **row)
 	tail->next = new_row(row);
 }
 
-void	init_matrix(t_matrix **matrix, int fd, int xy[2])
+void	init_matrix(t_matrix **matrix, int fd)
 {
 	int		coordinates[2];
 	char	*str;
@@ -48,12 +48,12 @@ void	init_matrix(t_matrix **matrix, int fd, int xy[2])
 	char	**save;
 	t_pixel	*row;
 
-	coordinates[1] = xy[1] / 2;
+	coordinates[1] = 0;
 	row = NULL;
 	str = get_next_line(fd);
 	while (str)
 	{
-		coordinates[0] = xy[0] / 2;
+		coordinates[0] = 0;
 		arr = ft_split(str, ' ');
 		save = arr;
 		free(str);

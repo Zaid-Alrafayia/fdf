@@ -40,7 +40,7 @@ int					validate_map(char *file);
 int					validate(int argc, char *file);
 
 // init_matrix_c
-void				init_matrix(t_matrix **matrix, int fd, int xy[2]);
+void				init_matrix(t_matrix **matrix, int fd);
 
 // init_pixel_c
 t_pixel				*new_pixel(int x, int y, int z);
