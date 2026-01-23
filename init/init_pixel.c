@@ -41,13 +41,11 @@ int	add_to_back(t_pixel **row, int x, int y, char *z)
 	t_pixel	*tmp;
 	t_pixel	*tail;
 	int		color;
-	char	*color_str;
 
 	color = 0xf23f23;
-	if (ft_strrchr(z, ','))
+	if (z && ft_strrchr(z, ','))
 	{
-		color_str = ft_strrchr(z, ',') + 1;
-		color = (int)ft_hexatoi(color_str);
+		color = (int)ft_hexatoi(ft_strrchr(z, ',') + 1);
 		z[ft_strchr(z, ',') - z] = '\0';
 		if (check_overflow(ft_atoi(z)))
 			return (1);

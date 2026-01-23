@@ -71,5 +71,8 @@ void				free_split(char **arr);
 // pixel_gen_c
 void				put_matrix(t_fdf **fdf);
 // scaling_c
-void				set_scaling(t_fdf **fdf);
+int					set_scaling(t_fdf **fdf, int keycode);
+
+// window_c
+void				init_window(t_fdf **fdf);
 #endif // !FDF_H

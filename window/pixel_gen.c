@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 17:22:56 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 21:18:35 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/23 17:33:50 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # define M_PI 3.14159265358979323846
 #endif
 
-static void	project_iso(int gx, int gy, int gz,	t_fdf **fdf, int ox,
-		int oy, int *sx, int *sy)
+static void	project_iso(int gx, int gy, int gz, t_fdf **fdf, int ox, int oy,
+		int *sx, int *sy)
 {
 	int				px;
 	int				py;
@@ -103,19 +103,23 @@ static void	draw_neighbors(t_fdf **fdf, int y, int x)
 	below = get_pixel_at((*fdf)->matrix, y + 1, x);
 	if (curr && right)
 	{
-		project_iso(curr->x, curr->y, curr->z, fdf, 200, 300, &sxy[0],
-			&sxy[1]);
-		project_iso(right->x, right->y, right->z, fdf, 200, 300, &sxy[2],
-			&sxy[3]);
+		project_iso(curr->x, curr->y, curr->z, fdf, (*fdf)->win_width / 2
+			- (*fdf)->matrix_width / 2, (*fdf)->win_height / 2
+			- (*fdf)->matrix_height / 2, &sxy[0], &sxy[1]);
+		project_iso(right->x, right->y, right->z, fdf, (*fdf)->win_width / 2
+			- (*fdf)->matrix_width / 2, (*fdf)->win_height / 2
+			- (*fdf)->matrix_height / 2, &sxy[2], &sxy[3]);
 		drawline((*fdf)->mlx, (*fdf)->mlx_win, sxy[0], sxy[1], sxy[2], sxy[3],
 			curr->color);
 	}
 	if (curr && below)
 	{
-		project_iso(curr->x, curr->y, curr->z, fdf, 200, 300, &sxy[0],
-			&sxy[1]);
-		project_iso(below->x, below->y, below->z, fdf, 200, 300, &sxy[2],
-			&sxy[3]);
+		project_iso(curr->x, curr->y, curr->z, fdf, (*fdf)->win_width / 2
+			- (*fdf)->matrix_width / 2, (*fdf)->win_height / 2
+			- (*fdf)->matrix_height / 2, &sxy[0], &sxy[1]);
+		project_iso(below->x, below->y, below->z, fdf, (*fdf)->win_width / 2
+			- (*fdf)->matrix_width / 2, (*fdf)->win_height / 2
+			- (*fdf)->matrix_height / 2, &sxy[2], &sxy[3]);
 		drawline((*fdf)->mlx, (*fdf)->mlx_win, sxy[0], sxy[1], sxy[2], sxy[3],
 			curr->color);
 	}
