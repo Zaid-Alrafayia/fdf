@@ -49,6 +49,9 @@ typedef struct s_fdf
 	int				height_scale;
 	int				z_min;
 	int				z_max;
+	double			x_ang;
+	int				offset_x;
+	int				offset_y;
 }					t_fdf;
 
 // parse_c
@@ -71,8 +74,8 @@ void				free_split(char **arr);
 // pixel_gen_c
 void				put_matrix(t_fdf **fdf);
 // scaling_c
-int					set_scaling(t_fdf **fdf, int keycode);
-
+void				set_scaling(t_fdf **fdf);
+int					zoom_scaling(int button, int x, int y, void *param);
 // window_c
 void				init_window(t_fdf **fdf);
 #endif // !FDF_H

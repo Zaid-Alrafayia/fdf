@@ -11,10 +11,6 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include "libft/libft.h"
-#include "minilibx-linux/mlx.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 void	print_pixel_row(t_pixel *p)
 {
@@ -64,10 +60,11 @@ t_fdf	*init_fdf(void)
 	fdf->matrix_height = 0;
 	fdf->matrix_width = 0;
 	fdf->color = 0xFFFFFF;
-	fdf->scale = 5;
+	fdf->scale = 1;
 	fdf->height_scale = 5;
 	fdf->z_min = INT_MAX;
 	fdf->z_max = INT_MIN;
+	fdf->x_ang = 6.0;
 	return (fdf);
 }
 
@@ -78,7 +75,6 @@ int	main(int argc, char **argv)
 
 	fdf = init_fdf();
 	validate(argc, argv[1], &fdf->matrix_width, &fdf->matrix_height);
-	ft_printf("width= %d\nheight= %d", fdf->matrix_width, fdf->matrix_height);
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
 	{
@@ -86,6 +82,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	init_matrix(&fdf, fd);
+	set_scaling(&fdf);
 	init_window(&fdf);
 	free_matrix(fdf->matrix);
 	return (0);
