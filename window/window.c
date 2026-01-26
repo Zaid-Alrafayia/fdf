@@ -29,16 +29,22 @@ int	close_program(void *param)
 }
 int	move_x_axis(int keycode, void *param)
 {
-	t_fdf	*fdf;
+	t_fdf			*fdf;
+	const double	delta = 1.0;
 
 	fdf = (t_fdf *)param;
 	if (!fdf)
-		exit(0);
+		return (0);
 	if (keycode == 100)
-		fdf->x_ang += fdf->x_ang / 0.5;
+		fdf->x_ang += delta;
 	else if (keycode == 97)
-		fdf->x_ang += fdf->x_ang / 0.5;
-	// mlx_clear_window(fdf->mlx, fdf->mlx_win);
+		fdf->x_ang -= delta;
+	fdf->x_ang = fmod(fdf->x_ang, 360.0);
+	if (fdf->x_ang < 0.0)
+		fdf->x_ang += 360.0;
+	printf("x_ang = %.2f°\n", fdf->x_ang);
+	if (fdf->mlx && fdf->mlx_win)
+		mlx_clear_window(fdf->mlx, fdf->mlx_win);
 	put_matrix(&fdf);
 	return (0);
 }
@@ -64,7 +70,7 @@ void	init_window(t_fdf **fdf)
 			(*fdf)->win_height, "!!The Great FDF!!");
 	put_matrix(fdf);
 	mlx_hook((*fdf)->mlx_win, 4, 1L << 2, zoom_scaling, *fdf);
-	mlx_hook((*fdf)->mlx_win, 2, 1L << 0, key_handler, fdf);
+	mlx_hook((*fdf)->mlx_win, 2, 1L << 0, key_handler, *fdf);
 	mlx_hook((*fdf)->mlx_win, 17, 0L, close_program, *fdf);
 	mlx_loop((*fdf)->mlx);
 }
