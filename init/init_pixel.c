@@ -41,22 +41,24 @@ int	add_to_back(t_pixel **row, int x, int y, char *z)
 	t_pixel	*tmp;
 	t_pixel	*tail;
 	int		color;
+	char	*comma;
+	int		value;
 
-	color = 0xf23f23;
-	if (z && ft_strrchr(z, ','))
-	{
-		color = (int)ft_hexatoi(ft_strrchr(z, ',') + 1);
-		z[ft_strchr(z, ',') - z] = '\0';
-		if (check_overflow(ft_atoi(z)))
-			return (1);
-		tmp = new_pixel(x, y, ft_atoi(z));
-		if (!tmp)
-			return (1);
-		tmp->color = color;
-	}
-	if (check_overflow(ft_atoi(z)) || !row)
+	if (!row || !z)
 		return (1);
-	tmp = new_pixel(x, y, ft_atoi(z));
+	color = 0xf23f23;
+	comma = ft_strchr(z, ',');
+	if (comma)
+	{
+		color = (int)ft_hexatoi(comma + 1);
+		*comma = '\0';
+	}
+	value = ft_atoi(z);
+	if (check_overflow(value))
+		return (1);
+	tmp = new_pixel(x, y, value);
+	if (!tmp)
+		return (1);
 	tmp->color = color;
 	if (!*row)
 	{

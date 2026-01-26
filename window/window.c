@@ -10,7 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "../fdf.h"
+#include <stdlib.h>
 
+int	close_program(void *param)
+{
+	t_fdf	*fdf;
+
+	fdf = (t_fdf *)param;
+	if (!fdf)
+		exit(0);
+	if (fdf->mlx && fdf->mlx_win)
+		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+	if (fdf->matrix)
+		free_matrix(fdf->matrix);
+	free(fdf);
+	exit(0);
+	return (0);
+}
+
+int	key_handler(int keycode, void *param)
+{
+	if (keycode == 65307)
+		return (close_program(param));
+	return (0);
+}
 void	init_window(t_fdf **fdf)
 {
 	(*fdf)->mlx = mlx_init();
@@ -22,11 +45,8 @@ void	init_window(t_fdf **fdf)
 	(*fdf)->mlx_win = mlx_new_window((*fdf)->mlx, (*fdf)->win_width,
 			(*fdf)->win_height, "!!The Great FDF!!");
 	put_matrix(fdf);
-	mlx_hook((*fdf)->mlx_win, 4, 1 << 2, set_scaling, &fdf);
+	mlx_hook((*fdf)->mlx_win, 4, 1L << 2, set_scaling, *fdf);
+	mlx_hook((*fdf)->mlx_win, 2, 1L << 0, key_handler, fdf);
+	mlx_hook((*fdf)->mlx_win, 17, 0L, close_program, *fdf);
 	mlx_loop((*fdf)->mlx);
-}
-
-void	destroy_window(t_fdf **fdf)
-{
-	mlx_destroy_window((*fdf)->mlx, (*fdf)->mlx_win);
 }

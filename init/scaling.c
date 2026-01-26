@@ -12,17 +12,25 @@
 
 #include "../fdf.h"
 
-int	set_scaling(t_fdf **fdf, int keycode)
+int	set_scaling(int button, int x, int y, void *param)
 {
-	ft_printf("scaling\n");
-	if (keycode == 4)
+	t_fdf	*fdf;
+
+	(void)x;
+	(void)y;
+	fdf = (t_fdf *)param;
+	if (!fdf)
+		return (0);
+	if (button == 4)
 	{
-		(*fdf)->scale = (*fdf)->scale + ((*fdf)->scale / 20);
+		ft_printf("up\n");
+		fdf->scale = fdf->scale + (fdf->scale / 20);
 	}
-	else if (keycode == 5)
+	else if (button == 5)
 	{
-		(*fdf)->scale = (*fdf)->scale - ((*fdf)->scale / 20);
+		ft_printf("down\n");
+		fdf->scale = fdf->scale - (fdf->scale / 20);
 	}
-	put_matrix(fdf);
+	put_matrix(&fdf);
 	return (0);
 }
