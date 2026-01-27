@@ -22,9 +22,17 @@ void	set_scaling(t_fdf **fdf)
 	(*fdf)->scale = ((*fdf)->win_width / (*fdf)->matrix_width) / 2;
 	if ((*fdf)->scale < 1)
 		(*fdf)->scale = 1;
-	(*fdf)->height_scale = ((*fdf)->win_height / z) / 4;
-	if ((*fdf)->height_scale < 1)
-		(*fdf)->height_scale = 1;
+	/* compute height scale from window/height range but cap relative to scale
+	   to avoid extremely large heights when z range is very small */
+	{
+		double h = ((double)(*fdf)->win_height / (double)z) / 4.0;
+		double max_h = (double)(*fdf)->scale ;
+		if (h > max_h)
+			h = max_h;
+		if (h < 0.1)
+			h = 0.1;
+		(*fdf)->height_scale = h;
+	}
 }
 
 int	zoom_scaling(int button, int x, int y, void *param)

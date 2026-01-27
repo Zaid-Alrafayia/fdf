@@ -27,12 +27,19 @@ static int	map_error(int fd, char *line, char *msg)
 int	validate_file_type(char *file)
 {
 	char	*index;
+	int size;
 
-	index = ft_strchr(file, '.');
-	if (ft_strncmp(index, ".fdf", 4) != 0)
+	size = ft_strlen(file);
+	if (size < 4)
 	{
-		ft_printf("ERROR: file type incompatiable!");
+		ft_printf("ERROR: file type incompatiable!\n");
 		return (1);
+	}
+	index = ft_strchr(file, '.');
+	if (!index || ft_strncmp(index, ".fdf", 5) != 0)
+	{
+		ft_printf("ERROR: file type incompatiable!\n");
+		return(1);
 	}
 	return (0);
 }
@@ -44,7 +51,9 @@ int	validate_map(char *file, int *width, int *height)
 	char	**arr;
 	int		row_width;
 	int		first_width;
+	int i;
 
+	i = 1;
 	first_width = -1;
 	*width = 0;
 	*height = 0;
@@ -63,6 +72,8 @@ int	validate_map(char *file, int *width, int *height)
 		row_width = 0;
 		while (arr[row_width])
 			row_width++;
+		ft_printf("row_width = %d, first_width = %d\n i = %d\n", row_width, first_width, i);
+
 		if (first_width == -1)
 			first_width = row_width;
 		else if (row_width != first_width)
@@ -70,9 +81,11 @@ int	validate_map(char *file, int *width, int *height)
 			free_split(arr);
 			free(line);
 			close(fd);
+			ft_printf("line: %s\n", line);
 			ft_printf("ERROR: map is not rectangular.\n");
 			return (0);
 		}
+		i++;
 		(*height)++;
 		free_split(arr);
 		free(line);

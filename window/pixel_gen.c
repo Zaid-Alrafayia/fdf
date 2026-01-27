@@ -14,25 +14,85 @@
 #include <limits.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
 
-static void	project_iso(int gx, int gy, int gz, t_fdf **fdf, int ox, int oy,
-		int *sx, int *sy)
+static inline void img_pixel_put(t_fdf *fdf, int x, int y, int color)
 {
-	int				px;
-	int				py;
-	double			xyz[3];
-	const double	ang = M_PI / (*fdf)->x_ang;
+	if (!fdf || !fdf->img_data)
+		return;
+	if (x < 0 || y < 0 || x >= fdf->win_width || y >= fdf->win_height)
+		return;
+	int bytes_per_pixel = fdf->bpp / 8;
+	if (bytes_per_pixel <= 0)
+		return;
+	int idx = y * fdf->line_len + x * bytes_per_pixel;
+	unsigned int col = (unsigned int)color;
+	if (fdf->endian == 0)
+	{
+		for (int i = 0; i < bytes_per_pixel; ++i)
+			fdf->img_data[idx + i] = (col >> (8 * i)) & 0xFF;
+	}
+	else
+	{
+		for (int i = 0; i < bytes_per_pixel; ++i)
+			fdf->img_data[idx + i] = (col >> (8 * (bytes_per_pixel - 1 - i))) & 0xFF;
+	}
+}
+static void rotate_x(double *y, double *z, double alpha_deg)
+{
+    double alpha = alpha_deg * M_PI / 180.0;
+    double tmp_y = *y;
+    double tmp_z = *z;
+    *y = tmp_y * cos(alpha) - tmp_z * sin(alpha);
+    *z = tmp_y * sin(alpha) + tmp_z * cos(alpha);
+}
 
-	xyz[0] = (double)gx * (*fdf)->scale;
-	xyz[1] = (double)gy * (*fdf)->scale;
-	xyz[2] = (double)gz * (*fdf)->height_scale;
-	px = (xyz[0] - xyz[1]) * cos(ang);
-	py = (xyz[0] + xyz[1]) * sin(ang) - xyz[2];
-	*sx = (int)(px + ox);
-	*sy = (int)(py + oy);
+static void rotate_y(double *x, double *z, double theta_deg)
+{
+    double theta = theta_deg * M_PI / 180.0;
+    double tmp_x = *x;
+    double tmp_z = *z;
+    *x = tmp_x * cos(theta) + tmp_z * sin(theta);
+    *z = tmp_z * cos(theta) - tmp_x * sin(theta);
+}
+
+static void rotate_z(double *x, double *y, double gamma_deg)
+{
+    double gamma = gamma_deg * M_PI / 180.0;
+    double tmp_x = *x;
+    double tmp_y = *y;
+    *x = tmp_x * cos(gamma) - tmp_y * sin(gamma);
+    *y = tmp_x * sin(gamma) + tmp_y * cos(gamma);
+}
+
+// Modified project_iso to apply rotations
+static void	project_iso(int gx, int gy, int gz, t_fdf **fdf, int ox, int oy,
+        int *sx, int *sy)
+{
+    double	x, y, z;
+    int		px, py;
+    const double	ang = M_PI / 6.0; // 30 degrees for classic iso
+
+    x = (double)gx * (*fdf)->scale;
+    y = (double)gy * (*fdf)->scale;
+    z = (double)gz * (*fdf)->height_scale;
+
+    // Apply Z, then Y, then X rotation
+	// Apply only the active axis rotation (flags are made exclusive in handlers)
+	if ((*fdf)->z_moved)
+		rotate_z(&x, &y, (*fdf)->z_ang);
+	 if ((*fdf)->y_moved)
+		rotate_y(&x, &z, (*fdf)->y_ang);
+	 if ((*fdf)->x_moved)
+		rotate_x(&y, &z, (*fdf)->x_ang);
+	
+    px = (x - y) * cos(ang);
+    py = (x + y) * sin(ang) - z;
+    *sx = (int)(px + ox);
+    *sy = (int)(py + oy);
 }
 
 static int	gradient_color(int color1, int color2, int step, int total)
@@ -108,7 +168,7 @@ void	drawline(t_fdf **fdf, int x0, int y0, int x1, int y1, int color1,
 	i = 0;
 	while (1)
 	{
-		mlx_pixel_put((*fdf)->mlx, (*fdf)->mlx_win, x0, y0,
+		img_pixel_put((*fdf), x0, y0,
 			gradient_color(color1, color2, i, total_steps));
 		if (x0 == x1 && y0 == y1)
 			break ;
@@ -231,19 +291,30 @@ static void	compute_center_offsets(t_fdf **fdf)
 
 void	put_matrix(t_fdf **fdf)
 {
-	int	y;
-	int	x;
+	int y;
+	int x;
+	t_fdf *f;
 
-	y = 0;
+	if (!fdf || !*fdf)
+		return;
+	f = *fdf;
+	/* clear image buffer once per frame */
+	if (f->img_data)
+		memset(f->img_data, 0, (size_t)f->line_len * (size_t)f->win_height);
+
 	compute_center_offsets(fdf);
-	while (y < (*fdf)->matrix_height)
+	y = 0;
+	while (y < f->matrix_height)
 	{
 		x = 0;
-		while (x < (*fdf)->matrix_width)
+		while (x < f->matrix_width)
 		{
 			draw_neighbors(fdf, y, x);
 			x++;
 		}
 		y++;
 	}
+	/* blit image buffer to window once per frame */
+	if (f->mlx && f->mlx_win && f->img)
+		mlx_put_image_to_window(f->mlx, f->mlx_win, f->img, 0, 0);
 }

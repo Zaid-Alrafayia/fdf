@@ -53,7 +53,7 @@ t_fdf	*init_fdf(void)
 	if (!fdf)
 		return (NULL);
 	fdf->win_height = 900;
-	fdf->win_width = 900;
+	fdf->win_width = 1200;
 	fdf->mlx = NULL;
 	fdf->mlx_win = NULL;
 	fdf->matrix = NULL;
@@ -61,10 +61,15 @@ t_fdf	*init_fdf(void)
 	fdf->matrix_width = 0;
 	fdf->color = 0xFFFFFF;
 	fdf->scale = 1;
-	fdf->height_scale = 5;
+	fdf->height_scale = 2.0;
 	fdf->z_min = INT_MAX;
 	fdf->z_max = INT_MIN;
 	fdf->x_ang = 6.0;
+	fdf->y_ang = 6.0;
+	fdf->z_ang = 6.0;
+	fdf->x_moved = false;
+	fdf->y_moved = false;
+	fdf->z_moved = false;
 	return (fdf);
 }
 
@@ -74,7 +79,11 @@ int	main(int argc, char **argv)
 	int		fd;
 
 	fdf = init_fdf();
-	validate(argc, argv[1], &fdf->matrix_width, &fdf->matrix_height);
+	if (!fdf || argc != 2)
+		return (1);
+	if (!validate(argc, argv[1], &fdf->matrix_width, &fdf->matrix_height))
+		{free(fdf);
+			return (1);}
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
 	{
