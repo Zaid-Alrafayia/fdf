@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include <math.h>
 
 void	print_pixel_row(t_pixel *p)
 {
@@ -59,7 +60,7 @@ t_fdf	*init_fdf(void)
 	fdf->matrix = NULL;
 	fdf->matrix_height = 0;
 	fdf->matrix_width = 0;
-	fdf->color = 0xFFFFFF;
+	fdf->ang = M_PI;
 	fdf->scale = 1;
 	fdf->height_scale = 2.0;
 	fdf->z_min = INT_MAX;

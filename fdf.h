@@ -50,7 +50,7 @@ typedef struct s_fdf
 	t_matrix		*matrix;
 	int				win_width;
 	int				win_height;
-	int				color;
+	double			ang;
 	int				matrix_width;
 	int				matrix_height;
 	int				scale;
