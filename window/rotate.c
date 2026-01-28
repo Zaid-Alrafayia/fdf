@@ -51,13 +51,11 @@ void	rotate_z(double *x, double *y, double gamma_deg)
 	*y = tmp_x * sin(gamma) + tmp_y * cos(gamma);
 }
 
-void	project_iso(t_pixel *node, t_fdf **fdf, int *sx, int *sy)
+void	project_iso_raw(t_pixel *node, t_fdf **fdf, int *px, int *py)
 {
 	double			xyz[3];
-	int				pxy[2];
 	int				gxyz[3];
 	const double	ang = M_PI / 6.0;
-	
 
 	gxyz[0] = node->x;
 	gxyz[1] = node->y;
@@ -71,8 +69,15 @@ void	project_iso(t_pixel *node, t_fdf **fdf, int *sx, int *sy)
 		rotate_y(&xyz[0], &xyz[2], (*fdf)->y_ang);
 	if ((*fdf)->x_moved)
 		rotate_x(&xyz[1], &xyz[2], (*fdf)->x_ang);
-	pxy[0] = (xyz[0] - xyz[1]) * cos(ang);
-	pxy[1] = (xyz[0] + xyz[1]) * sin(ang) - xyz[2];
-	*sx = (int)(pxy[0] + (*fdf)->offset_x);
-	*sy = (int)(pxy[1] + (*fdf)->offset_y);
+	*px = (int)((xyz[0] - xyz[1]) * cos(ang));
+	*py = (int)((xyz[0] + xyz[1]) * sin(ang) - xyz[2]);
+}
+
+void	project_iso(t_pixel *node, t_fdf **fdf, int *sx, int *sy)
+{
+	int	pxy[2];
+
+	project_iso_raw(node, fdf, &pxy[0], &pxy[1]);
+	*sx = pxy[0] + (*fdf)->offset_x;
+	*sy = pxy[1] + (*fdf)->offset_y;
 }

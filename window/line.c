@@ -69,7 +69,6 @@ void	drawline(t_fdf **fdf, int xy[4], int color1, int color2)
 	int	i;
 	int	total_steps;
 
-	
 	calc_abs_diff(xy, abs);
 	calc_step_direction(xy, s);
 	calc_total_steps(abs, &total_steps);

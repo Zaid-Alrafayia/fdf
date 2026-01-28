@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:17:50 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 11:38:11 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 12:58:53 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ typedef struct s_fdf
 	int				matrix_height;
 	int				scale;
 	double			height_scale;
-		double			center_x;
-	double			center_y;
 	int				z_min;
 	int				z_max;
 	double			x_ang;
@@ -110,11 +108,14 @@ void				rotate_x(double *y, double *z, double alpha_deg);
 void				rotate_y(double *x, double *z, double theta_deg);
 void				rotate_z(double *x, double *y, double gamma_deg);
 void				project_iso(t_pixel *node, t_fdf **fdf, int *sx, int *sy);
-
+void				project_iso_raw(t_pixel *node, t_fdf **fdf, int *px,
+						int *py);
 /*movement_c*/
 int					move_x_axis(int keycode, void *param);
 int					move_y_axis(int keycode, void *param);
 int					move_z_axis(int keycode, void *param);
 int					change_height_scale(int keycode, void *param);
 
+/*offset_c*/
+void				compute_center_offsets(t_fdf **fdf);
 #endif // FDF_H
