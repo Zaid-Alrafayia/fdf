@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:20:56 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 09:46:25 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 18:02:31 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,41 @@ int	validate_file_type(char *file)
 	return (0);
 }
 
+int	valid_loop(char *line, int row_fl[2], int fd, int *height)
+{
+	char	**arr;
+
+	while (line)
+	{
+		arr = ft_split(line, ' ');
+		row_fl[0] = 0;
+		while (arr[row_fl[0]])
+			row_fl[0]++;
+		if (row_fl[1] == -1)
+			row_fl[1] = row_fl[0];
+		else if (row_fl[0] != row_fl[1])
+		{
+			free_split(arr);
+			free(line);
+			close(fd);
+			ft_printf("ERROR: map is not rectangular.\n");
+			return (0);
+		}
+		(*height)++;
+		free_split(arr);
+		free(line);
+		line = get_next_line(fd);
+	}
+	return (1);
+}
+
 int	validate_map(char *file, int *width, int *height)
 {
 	int		fd;
 	char	*line;
-	char	**arr;
-	int		row_width;
-	int		first_width;
-	int		i;
+	int		row_fl[2];
 
-	i = 1;
-	first_width = -1;
+	row_fl[1] = -1;
 	*width = 0;
 	*height = 0;
 	fd = open(file, O_RDONLY);
@@ -66,29 +90,8 @@ int	validate_map(char *file, int *width, int *height)
 		map_error(fd, NULL, "ERROR: map is empty.");
 		return (-1);
 	}
-	while (line)
-	{
-		arr = ft_split(line, ' ');
-		row_width = 0;
-		while (arr[row_width])
-			row_width++;
-		if (first_width == -1)
-			first_width = row_width;
-		else if (row_width != first_width)
-		{
-			free_split(arr);
-			free(line);
-			close(fd);
-			ft_printf("ERROR: map is not rectangular.\n");
-			return (0);
-		}
-		i++;
-		(*height)++;
-		free_split(arr);
-		free(line);
-		line = get_next_line(fd);
-	}
-	*width = first_width;
+	valid_loop(line, row_fl, fd, height);
+	*width = row_fl[1];
 	close(fd);
 	return (1);
 }

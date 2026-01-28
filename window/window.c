@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 19:04:28 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 09:45:59 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 15:37:10 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../fdf.h"
@@ -19,13 +19,16 @@ int	close_program(void *param)
 	fdf = (t_fdf *)param;
 	if (!fdf)
 		exit(0);
-	if (fdf->mlx && fdf->mlx_win)
-		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
 	if (fdf->img)
 		mlx_destroy_image(fdf->mlx, fdf->img);
-	if (fdf->matrix)
-		free_matrix(fdf->matrix);
-	free(fdf);
+	if (fdf->mlx_win)
+		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+	if (fdf->mlx)
+	{
+		mlx_destroy_display(fdf->mlx);
+		free(fdf->mlx);
+	}
+	free_fdf(&fdf);
 	exit(0);
 	return (0);
 }

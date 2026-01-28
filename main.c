@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 00:38:42 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 13:08:36 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 15:16:22 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_fdf	*init_fdf(void)
 {
 	t_fdf	*fdf;
 
-	fdf = (t_fdf *)malloc(sizeof(t_fdf));
+	fdf = (t_fdf *)calloc(1, sizeof(t_fdf));
 	if (!fdf)
 		return (NULL);
 	fdf->win_height = 900;
@@ -95,6 +95,6 @@ int	main(int argc, char **argv)
 	init_matrix(&fdf, fd);
 	set_scaling(&fdf);
 	init_window(&fdf);
-	free_matrix(fdf->matrix);
+	free_fdf(&fdf);
 	return (0);
 }

@@ -6,12 +6,27 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 14:34:44 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/21 14:35:58 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 15:38:03 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../fdf.h"
 
-void	free_pixel_row(t_pixel *p)
+void	free_split(char **arr)
+{
+	char	**save;
+
+	if (!arr)
+		return ;
+	save = arr;
+	while (*arr)
+	{
+		free(*arr);
+		arr++;
+	}
+	free(save);
+}
+
+static void	free_pixels(t_pixel *p)
 {
 	t_pixel	*tmp;
 
@@ -30,23 +45,31 @@ void	free_matrix(t_matrix *m)
 	while (m)
 	{
 		tmp = m->next;
-		free_pixel_row(m->node);
+		if (m->node)
+			free_pixels(m->node);
 		free(m);
 		m = tmp;
 	}
 }
 
-void	free_split(char **arr)
+void	free_fdf(t_fdf **fdf)
 {
-	char	**save;
-
-	if (!arr)
+	if (!fdf || !*fdf)
 		return ;
-	save = arr;
-	while (*arr)
+	if ((*fdf)->matrix)
+		free_matrix((*fdf)->matrix);
+	free(*fdf);
+	*fdf = NULL;
+}
+
+void	clear_gnl(int fd)
+{
+	char	*line;
+
+	line = get_next_line(fd);
+	while (line)
 	{
-		free(*arr);
-		arr++;
+		free(line);
+		line = get_next_line(fd);
 	}
-	free(save);
 }

@@ -6,12 +6,13 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 12:05:38 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 21:31:33 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 17:16:00 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../fdf.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 static t_matrix	*new_row(t_pixel **row)
 {
@@ -41,51 +42,48 @@ static void	add_to_matrix(t_matrix **matrix, t_pixel **row)
 	tail->next = new_row(row);
 }
 
-void	init_matrix(t_fdf **fdf, int fd)
+t_pixel	*process_line(t_fdf **fdf, char *str, int y, int *row_width)
 {
-	int		coordinates[2];
-	char	*str;
 	char	**arr;
-	char	**save;
+	int		xz[2];
 	t_pixel	*row;
-	int		row_width;
-	int		z_val;
 
-	row_width = 0;
-	coordinates[1] = 0;
+	arr = ft_split(str, ' ');
+	if (!arr)
+		return (NULL);
 	row = NULL;
-	str = get_next_line(fd);
-	while (str)
+	xz[0] = 0;
+	while (arr[xz[0]] && ++(*row_width))
 	{
-		coordinates[0] = 0;
-		arr = ft_split(str, ' ');
-		save = arr;
-		free(str);
-		row_width = 0;
-		while (*arr)
+		xz[1] = ft_atoi(arr[xz[0]]);
+		if (xz[1] < (*fdf)->z_min)
+			(*fdf)->z_min = xz[1];
+		if (xz[1] > (*fdf)->z_max)
+			(*fdf)->z_max = xz[1];
+		if (add_to_back(&row, xz[0], y, arr[xz[0]]))
 		{
-			z_val = ft_atoi(*arr);
-			if (z_val < (*fdf)->z_min)
-				(*fdf)->z_min = z_val;
-			if (z_val > (*fdf)->z_max)
-				(*fdf)->z_max = z_val;
-			if (add_to_back(&row, coordinates[0], coordinates[1], *arr))
-			{
-				free_split(save);
-				free_matrix((*fdf)->matrix);
-				return ;
-			}
-			coordinates[0]++;
-			arr++;
-			row_width++;
+			free_split(arr);
+			return (NULL);
 		}
-		if (coordinates[1] == 0)
-			(*fdf)->matrix_width = row_width;
-		add_to_matrix(&(*fdf)->matrix, &row);
-		coordinates[1]++;
-		free_split(save);
-		str = get_next_line(fd);
+		xz[0]++;
 	}
-	(*fdf)->matrix_height = coordinates[1];
+	free_split(arr);
+	return (row);
+}
+
+void	handle_error_and_exit(t_fdf **fdf, int fd)
+{
+	if (fdf)
+		free_fdf(fdf);
+	clear_gnl(fd);
 	close(fd);
+	exit(1);
+}
+
+void	add_row_to_matrix_and_update(t_fdf **fdf, t_pixel **row, int row_width,
+		int y)
+{
+	if (y == 0)
+		(*fdf)->matrix_width = row_width;
+	add_to_matrix(&(*fdf)->matrix, row);
 }

@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:17:50 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 12:58:53 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 17:15:56 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,11 @@ int					validate_map(char *file, int *width, int *height);
 
 /* init_matrix_c */
 void				init_matrix(t_fdf **fdf, int fd);
-
+void				handle_error_and_exit(t_fdf **fdf, int fd);
+void				add_row_to_matrix_and_update(t_fdf **fdf, t_pixel **row,
+						int row_width, int y);
+t_pixel				*process_line(t_fdf **fdf, char *str, int y,
+						int *row_width);
 /* init_pixel_c */
 t_pixel				*new_pixel(int x, int y, int z);
 int					add_to_back(t_pixel **row, int x, int y, char *z);
@@ -89,7 +93,8 @@ int					add_to_back(t_pixel **row, int x, int y, char *z);
 void				free_pixel_row(t_pixel *p);
 void				free_matrix(t_matrix *m);
 void				free_split(char **arr);
-
+void				free_fdf(t_fdf **fdf);
+void				clear_gnl(int fd);
 /* pixel_gen_c */
 void				put_matrix(t_fdf **fdf);
 int					gradient_color(int color1, int color2, int step, int total);

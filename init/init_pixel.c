@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 13:34:07 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/22 21:15:36 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 17:18:09 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,38 +36,53 @@ t_pixel	*new_pixel(int x, int y, int z)
 	return (node);
 }
 
-int	add_to_back(t_pixel **row, int x, int y, char *z)
+static int	parse_color_and_value(char *z, int *color, int *value)
 {
-	t_pixel	*tmp;
-	t_pixel	*tail;
-	int		color;
 	char	*comma;
-	int		value;
 
-	if (!row || !z)
-		return (1);
-	color = 0xf23f23;
+	*color = 0xFFFFFF;
 	comma = ft_strchr(z, ',');
 	if (comma)
 	{
-		color = (int)ft_hexatoi(comma + 1);
+		*color = (int)ft_hexatoi(comma + 1);
 		*comma = '\0';
 	}
-	value = ft_atoi(z);
-	if (check_overflow(value))
-		return (1);
-	tmp = new_pixel(x, y, value);
-	if (!tmp)
-		return (1);
-	tmp->color = color;
+	*value = ft_atoi(z);
+	return (0);
+}
+
+static int	append_pixel(t_pixel **row, t_pixel *tmp)
+{
+	t_pixel	*tail;
+
 	if (!*row)
 	{
 		*row = tmp;
 		return (0);
 	}
-	tail = (*row);
+	tail = *row;
 	while (tail->next)
 		tail = tail->next;
 	tail->next = tmp;
 	return (0);
+}
+
+int	add_to_back(t_pixel **row, int x, int y, char *z)
+{
+	t_pixel	*tmp;
+	int		color;
+	int		value;
+
+	if (!row || !z)
+		return (1);
+	parse_color_and_value(z, &color, &value);
+	if (check_overflow(value))
+		return (1);
+	(void)x;
+	(void)y;
+	tmp = new_pixel(x, y, value);
+	if (!tmp)
+		return (1);
+	tmp->color = color;
+	return (append_pixel(row, tmp));
 }
