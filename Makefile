@@ -4,7 +4,8 @@ LIBFT_DIR = libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
 SRC = main.c init/validation.c init/init_matrix.c init/init_pixel.c utils/free.c window/pixel_gen.c init/scaling.c\
-			window/window.c window/movement.c
+			window/window.c window/movement.c window/rotate.c window/draw.c \
+			window/line.c
 OBJ = $(SRC:.c=.o)
 
 CC = gcc

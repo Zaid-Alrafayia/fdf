@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 19:04:28 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/23 19:07:42 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 09:45:59 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../fdf.h"
@@ -29,6 +29,7 @@ int	close_program(void *param)
 	exit(0);
 	return (0);
 }
+
 int	key_handler(int keycode, void *param)
 {
 	if (keycode == 65307)
@@ -54,7 +55,6 @@ void	init_window(t_fdf **fdf)
 	}
 	(*fdf)->mlx_win = mlx_new_window((*fdf)->mlx, (*fdf)->win_width,
 			(*fdf)->win_height, "!!The Great FDF!!");
-	/* create image buffer for faster rendering */
 	(*fdf)->img = mlx_new_image((*fdf)->mlx, (*fdf)->win_width,
 			(*fdf)->win_height);
 	(*fdf)->img_data = mlx_get_data_addr((*fdf)->img, &(*fdf)->bpp,

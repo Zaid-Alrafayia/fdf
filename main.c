@@ -6,7 +6,7 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 00:38:42 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/23 20:58:04 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 11:36:04 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ t_fdf	*init_fdf(void)
 	fdf->x_ang = 6.0;
 	fdf->y_ang = 6.0;
 	fdf->z_ang = 6.0;
+	fdf->center_x = fdf->win_width / 2.0;
+	fdf->center_y = fdf->win_height / 2.0;
 	fdf->x_moved = false;
 	fdf->y_moved = false;
 	fdf->z_moved = false;
@@ -82,8 +84,10 @@ int	main(int argc, char **argv)
 	if (!fdf || argc != 2)
 		return (1);
 	if (!validate(argc, argv[1], &fdf->matrix_width, &fdf->matrix_height))
-		{free(fdf);
-			return (1);}
+	{
+		free(fdf);
+		return (1);
+	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
 	{
@@ -91,6 +95,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	init_matrix(&fdf, fd);
+	print_matrix(fdf->matrix);
 	set_scaling(&fdf);
 	init_window(&fdf);
 	free_matrix(fdf->matrix);

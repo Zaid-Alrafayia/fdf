@@ -6,12 +6,13 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 00:38:26 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 00:39:47 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/28 11:46:34 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../fdf.h"
 
-static void	rotate_x(double *y, double *z, double alpha_deg)
+void	rotate_x(double *y, double *z, double alpha_deg)
 {
 	double	alpha;
 	double	tmp_y;
@@ -24,7 +25,7 @@ static void	rotate_x(double *y, double *z, double alpha_deg)
 	*z = tmp_y * sin(alpha) + tmp_z * cos(alpha);
 }
 
-static void	rotate_y(double *x, double *z, double theta_deg)
+void	rotate_y(double *x, double *z, double theta_deg)
 {
 	double	theta;
 	double	tmp_x;
@@ -37,7 +38,7 @@ static void	rotate_y(double *x, double *z, double theta_deg)
 	*z = tmp_z * cos(theta) - tmp_x * sin(theta);
 }
 
-static void	rotate_z(double *x, double *y, double gamma_deg)
+void	rotate_z(double *x, double *y, double gamma_deg)
 {
 	double	gamma;
 	double	tmp_x;
@@ -50,23 +51,28 @@ static void	rotate_z(double *x, double *y, double gamma_deg)
 	*y = tmp_x * sin(gamma) + tmp_y * cos(gamma);
 }
 
-void	project_iso(int gx, int gy, int gz, t_fdf **fdf, int ox, int oy,
-		int *sx, int *sy)
+void	project_iso(t_pixel *node, t_fdf **fdf, int *sx, int *sy)
 {
-	double x, y, z;
-	int px, py;
-	const double ang = M_PI / 6.0; // 30 degrees for classic iso
-	x = (double)gx * (*fdf)->scale;
-	y = (double)gy * (*fdf)->scale;
-	z = (double)gz * (*fdf)->height_scale;
+	double			xyz[3];
+	int				pxy[2];
+	int				gxyz[3];
+	const double	ang = M_PI / 6.0;
+	
+
+	gxyz[0] = node->x;
+	gxyz[1] = node->y;
+	gxyz[2] = node->z;
+	xyz[0] = (double)gxyz[0] * (*fdf)->scale;
+	xyz[1] = (double)gxyz[1] * (*fdf)->scale;
+	xyz[2] = (double)gxyz[2] * (*fdf)->height_scale;
 	if ((*fdf)->z_moved)
-		rotate_z(&x, &y, (*fdf)->z_ang);
+		rotate_z(&xyz[0], &xyz[1], (*fdf)->z_ang);
 	if ((*fdf)->y_moved)
-		rotate_y(&x, &z, (*fdf)->y_ang);
+		rotate_y(&xyz[0], &xyz[2], (*fdf)->y_ang);
 	if ((*fdf)->x_moved)
-		rotate_x(&y, &z, (*fdf)->x_ang);
-	px = (x - y) * cos(ang);
-	py = (x + y) * sin(ang) - z;
-	*sx = (int)(px + ox);
-	*sy = (int)(py + oy);
+		rotate_x(&xyz[1], &xyz[2], (*fdf)->x_ang);
+	pxy[0] = (xyz[0] - xyz[1]) * cos(ang);
+	pxy[1] = (xyz[0] + xyz[1]) * sin(ang) - xyz[2];
+	*sx = (int)(pxy[0] + (*fdf)->offset_x);
+	*sy = (int)(pxy[1] + (*fdf)->offset_y);
 }
