@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FDF_H
-# define FDF_H
+#ifndef FDF_BONUS_H
+# define FDF_BONUS_H
 
 # include "libft/libft.h"
 # include "minilibx-linux/mlx.h"
@@ -23,7 +23,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-
 # ifndef M_PI
 #  define M_PI 3.14159265358979323846
 # endif
@@ -57,8 +56,15 @@ typedef struct s_fdf
 	double			height_scale;
 	int				z_min;
 	int				z_max;
+	double			x_ang;
+	double			y_ang;
+	double			z_ang;
+	bool			x_moved;
+	bool			y_moved;
+	bool			z_moved;
 	int				offset_x;
 	int				offset_y;
+	double			zoom;
 	void			*img;
 	char			*img_data;
 	int				bpp;
@@ -97,13 +103,22 @@ t_pixel				*get_pixel_at(t_matrix *matrix, int y, int x);
 
 /* scaling_c */
 void				set_scaling(t_fdf **fdf);
+int					zoom_scaling(int button, int x, int y, void *param);
 
 /* window_c */
 void				init_window(t_fdf **fdf);
 /*rotate_c*/
+void				rotate_x(double *y, double *z, double alpha_deg);
+void				rotate_y(double *x, double *z, double theta_deg);
+void				rotate_z(double *x, double *y, double gamma_deg);
 void				project_iso(t_pixel *node, t_fdf **fdf, int *sx, int *sy);
 void				project_iso_raw(t_pixel *node, t_fdf **fdf, int *px,
 						int *py);
+/*movement_c*/
+int					move_x_axis(int keycode, void *param);
+int					move_y_axis(int keycode, void *param);
+int					move_z_axis(int keycode, void *param);
+int					change_height_scale(int keycode, void *param);
 
 /*offset_c*/
 void				compute_center_offsets(t_fdf **fdf);

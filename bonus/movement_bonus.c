@@ -9,7 +9,7 @@
 /*   Updated: 2026/01/28 00:37:30 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../fdf.h"
+#include "../fdf_bonus.h"
 
 int	move_x_axis(int keycode, void *param)
 {

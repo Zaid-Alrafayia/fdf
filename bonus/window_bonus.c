@@ -9,10 +9,7 @@
 /*   Updated: 2026/01/28 15:37:10 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../fdf.h"
-#include <math.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include "../fdf_bonus.h"
 
 int	close_program(void *param)
 {

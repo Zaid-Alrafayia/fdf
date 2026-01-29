@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "fdf_bonus.h"
 #include <math.h>
 
 t_fdf	*init_fdf(void)
@@ -32,6 +32,13 @@ t_fdf	*init_fdf(void)
 	fdf->height_scale = 2.0;
 	fdf->z_min = INT_MAX;
 	fdf->z_max = INT_MIN;
+	fdf->x_ang = 6.0;
+	fdf->zoom = 0.0;
+	fdf->y_ang = 6.0;
+	fdf->z_ang = 6.0;
+	fdf->x_moved = false;
+	fdf->y_moved = false;
+	fdf->z_moved = false;
 	return (fdf);
 }
 
