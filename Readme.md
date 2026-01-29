@@ -84,11 +84,3 @@ valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all ./fdf test_
 
 ## Contact
 Author: zaalrafa (42 login: zaalrafa)
-
----
-
-If you want, I can:
-- Produce a short CONTRIBUTING.md with coding style and the exact Norminette checks I used.
-- Create a reproducible Valgrind script and a small unit test that exercises GNL EOF behavior to show the leak is fixed.
-- Produce a minimal diff / PR for any of the refactors discussed.
-

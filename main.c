@@ -42,7 +42,10 @@ int	main(int argc, char **argv)
 
 	fdf = init_fdf();
 	if (!fdf || argc != 2)
+	{
+		free(fdf);
 		return (1);
+	}
 	if (!validate(argc, argv[1], &fdf->matrix_width, &fdf->matrix_height))
 	{
 		free(fdf);

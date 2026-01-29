@@ -44,7 +44,8 @@ clean:
 	make -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) $(NAME)_bonus
+	rm -f $(NAME) $(NAME)_bonus $(MLX_LIB)
+	make -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
