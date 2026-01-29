@@ -4,9 +4,14 @@ LIBFT_DIR = libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
 SRC = main.c init/validation.c init/init_matrix.c init/init_pixel.c utils/free.c window/pixel_gen.c init/scaling.c\
-			window/window.c window/movement.c window/rotate.c window/draw.c \
+			window/window.c  window/rotate.c window/draw.c \
 			window/line.c window/offset.c init/matrix.c
+BONUS_SRC = main.c init/validation.c init/init_matrix.c init/init_pixel.c utils/free.c window/pixel_gen.c init/scaling_bonus.c\
+			window/window_bonus.c window/movement_bonus.c window/rotate_bonus.c window/draw.c \
+			window/line.c window/offset.c init/matrix.c
+
 OBJ = $(SRC:.c=.o)
+BONUS_OBJ = $(BONUS_SRC:.c=.o)
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
@@ -22,6 +27,9 @@ all: $(NAME)
 $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
 	$(CC) $(CFLAGS) $(OBJ) $(MLX_LIB) $(LIBFT_LIB) -lXext -lX11 -lm $(LDFLAGS) -o $(NAME)
 
+bonus: $(BONUS_OBJ) $(MLX_LIB) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(BONUS_OBJ) $(MLX_LIB) $(LIBFT_LIB) -lXext -lX11 -lm $(LDFLAGS) -o $(NAME)
+
 $(MLX_LIB):
 	make -C $(MLX_DIR)
 
@@ -32,7 +40,7 @@ $(LIBFT_LIB):
 	$(CC) $(CFLAGS) -I$(MLX_DIR) -I$(LIBFT_DIR) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	rm -f $(OBJ) $(BONUS_OBJ)
 	make -C $(MLX_DIR) clean
 	make -C $(LIBFT_DIR) clean
 
@@ -40,3 +48,5 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all bonus clean fclean re

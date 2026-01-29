@@ -65,7 +65,7 @@ typedef struct s_fdf
 	bool			z_moved;
 	int				offset_x;
 	int				offset_y;
-
+	double			zoom;
 	void			*img;
 	char			*img_data;
 	int				bpp;

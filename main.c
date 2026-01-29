@@ -13,39 +13,6 @@
 #include "fdf.h"
 #include <math.h>
 
-void	print_pixel_row(t_pixel *p)
-{
-	if (!p)
-	{
-		printf("(empty row)\n");
-		return ;
-	}
-	while (p)
-	{
-		printf(" %d ", p->z);
-		p = p->next;
-	}
-	printf("\n");
-}
-
-void	print_matrix(t_matrix *m)
-{
-	size_t	row;
-
-	row = 0;
-	if (!m)
-	{
-		printf("matrix: (empty)\n");
-		return ;
-	}
-	while (m)
-	{
-		printf("row %zu: ", row++);
-		print_pixel_row(m->node);
-		m = m->next;
-	}
-}
-
 t_fdf	*init_fdf(void)
 {
 	t_fdf	*fdf;
@@ -60,12 +27,13 @@ t_fdf	*init_fdf(void)
 	fdf->matrix = NULL;
 	fdf->matrix_height = 0;
 	fdf->matrix_width = 0;
-	fdf->ang = M_PI;
+	fdf->ang = M_PI / 6;
 	fdf->scale = 1;
 	fdf->height_scale = 2.0;
 	fdf->z_min = INT_MAX;
 	fdf->z_max = INT_MIN;
 	fdf->x_ang = 6.0;
+	fdf->zoom = 0.0;
 	fdf->y_ang = 6.0;
 	fdf->z_ang = 6.0;
 	fdf->x_moved = false;

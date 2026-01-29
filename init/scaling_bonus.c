@@ -32,3 +32,38 @@ void	set_scaling(t_fdf **fdf)
 		h = 0.1;
 	(*fdf)->height_scale = h;
 }
+
+void	zoom_condtions(t_fdf **fdf, int ab[2], int button)
+{
+	if (ab[0] < 1)
+		ab[0] = 1;
+	if (button == 4)
+		(*fdf)->scale += ab[0];
+	else if (button == 5)
+	{
+		(*fdf)->scale -= ab[0];
+		if ((*fdf)->scale < 1)
+			(*fdf)->scale = 1;
+	}
+}
+
+int	zoom_scaling(int button, int x, int y, void *param)
+{
+	t_fdf	*fdf;
+	int		ab[2];
+
+	(void)y;
+	(void)x;
+	fdf = (t_fdf *)param;
+	if (!fdf)
+		return (0);
+	ab[1] = fdf->scale;
+	ab[0] = fdf->scale / 20;
+	zoom_condtions(&fdf, ab, button);
+	if ((button == 4 || button == 5) && ab[1] != fdf->scale)
+	{
+		mlx_clear_window(fdf->mlx, fdf->mlx_win);
+		put_matrix(&fdf);
+	}
+	return (0);
+}

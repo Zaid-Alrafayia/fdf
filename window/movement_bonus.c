@@ -93,7 +93,6 @@ int	change_height_scale(int keycode, void *param)
 	{
 		fdf->height_scale += 1;
 	}
-	printf("height_scale = %f\n", fdf->height_scale);
 	if (fdf->mlx && fdf->mlx_win)
 		mlx_clear_window(fdf->mlx, fdf->mlx_win);
 	put_matrix(&fdf);
