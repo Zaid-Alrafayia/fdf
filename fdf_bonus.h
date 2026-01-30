@@ -86,7 +86,7 @@ t_pixel				*process_line(t_fdf **fdf, char *str, int y,
 						int *row_width);
 /* init_pixel_c */
 t_pixel				*new_pixel(int x, int y, int z);
-int					add_to_back(t_pixel **row, int x, int y, char *z);
+int			add_to_back(t_fdf *fdf, t_pixel **row, int x, int y, char *z);
 
 /* free_c */
 void				free_pixel_row(t_pixel *p);

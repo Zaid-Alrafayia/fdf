@@ -60,7 +60,7 @@ t_pixel	*process_line(t_fdf **fdf, char *str, int y, int *row_width)
 			(*fdf)->z_min = xz[1];
 		if (xz[1] > (*fdf)->z_max)
 			(*fdf)->z_max = xz[1];
-		if (add_to_back(&row, xz[0], y, arr[xz[0]]))
+		if (add_to_back(*fdf, &row, xz[0], y, arr[xz[0]]))
 		{
 			free_split(arr);
 			return (NULL);
