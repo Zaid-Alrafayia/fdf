@@ -17,11 +17,13 @@ static void	draw_neighbors(t_fdf **fdf, int y, int x)
 	t_pixel	*curr;
 	t_pixel	*right;
 	t_pixel	*below;
+	t_pixel	*right_under;
 	int		sxy[4];
 
 	curr = get_pixel_at((*fdf)->matrix, y, x);
 	right = get_pixel_at((*fdf)->matrix, y, x + 1);
 	below = get_pixel_at((*fdf)->matrix, y + 1, x);
+	right_under = get_pixel_at((*fdf)->matrix, y + 1, x + 1);
 	if (curr && right)
 	{
 		project_iso(curr, fdf, &sxy[0], &sxy[1]);
@@ -33,6 +35,19 @@ static void	draw_neighbors(t_fdf **fdf, int y, int x)
 		project_iso(curr, fdf, &sxy[0], &sxy[1]);
 		project_iso(below, fdf, &sxy[2], &sxy[3]);
 		drawline(fdf, sxy, curr->color, below->color);
+	}
+	// these are extra
+	if (below && right)
+	{
+		project_iso(below, fdf, &sxy[0], &sxy[1]);
+		project_iso(right, fdf, &sxy[2], &sxy[3]);
+		drawline(fdf, sxy, below->color, right->color);
+	}
+	if (curr && right_under)
+	{
+		project_iso(curr, fdf, &sxy[0], &sxy[1]);
+		project_iso(right_under, fdf, &sxy[2], &sxy[3]);
+		drawline(fdf, sxy, curr->color, right_under->color);
 	}
 }
 

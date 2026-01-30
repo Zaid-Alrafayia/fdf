@@ -6,9 +6,10 @@
 /*   By: zaalrafa <zaalrafa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 19:04:28 by zaalrafa          #+#    #+#             */
-/*   Updated: 2026/01/28 15:37:10 by zaalrafa         ###   ########.fr       */
+/*   Updated: 2026/01/29 15:10:10 by zaalrafa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../fdf.h"
 
 int	close_program(void *param)
