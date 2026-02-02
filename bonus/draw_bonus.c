@@ -12,42 +12,81 @@
 
 #include "../fdf_bonus.h"
 
+static int	resolve_pixel_color(t_fdf *fdf, t_pixel *p)
+{
+	double	t;
+	double	loc;
+	int		step;
+
+	if (!p)
+		return (0x000000);
+	if (p->color != -1)
+		return (p->color);
+	if (!fdf || fdf->z_max == fdf->z_min)
+		return (0x228B22);
+	t = (double)(p->z - fdf->z_min) / (double)(fdf->z_max - fdf->z_min);
+	if (t < 0.0)
+		t = 0.0;
+	if (t > 1.0)
+		t = 1.0;
+	if (t < 0.20)
+	{
+		loc = t / 0.20;
+		step = (int)(loc * 1000.0);
+		return (gradient_color(0x000080, 0x1E90FF, step, 1000));
+	}
+	if (t < 0.25)
+	{
+		loc = (t - 0.20) / 0.05;
+		step = (int)(loc * 1000.0);
+		return (gradient_color(0x1E90FF, 0xF4A460, step, 1000));
+	}
+	if (t < 0.50)
+	{
+		loc = (t - 0.25) / 0.25;
+		step = (int)(loc * 1000.0);
+		return (gradient_color(0x228B22, 0x006400, step, 1000));
+	}
+	if (t < 0.70)
+	{
+		loc = (t - 0.50) / 0.20;
+		step = (int)(loc * 1000.0);
+		return (gradient_color(0x8B7765, 0x8B4513, step, 1000));
+	}
+	if (t < 0.90)
+	{
+		loc = (t - 0.70) / 0.20;
+		step = (int)(loc * 1000.0);
+		return (gradient_color(0xA9A9A9, 0x808080, step, 1000));
+	}
+	loc = (t - 0.90) / 0.10;
+	step = (int)(loc * 1000.0);
+	return (gradient_color(0xFFFFFF, 0xFFFFFF, step, 1000));
+}
+
 static void	draw_neighbors(t_fdf **fdf, int y, int x)
 {
 	t_pixel	*curr;
 	t_pixel	*right;
 	t_pixel	*below;
-	t_pixel	*right_under;
 	int		sxy[4];
 
 	curr = get_pixel_at((*fdf)->matrix, y, x);
 	right = get_pixel_at((*fdf)->matrix, y, x + 1);
 	below = get_pixel_at((*fdf)->matrix, y + 1, x);
-	right_under = get_pixel_at((*fdf)->matrix, y + 1, x + 1);
 	if (curr && right)
 	{
 		project_iso(curr, fdf, &sxy[0], &sxy[1]);
 		project_iso(right, fdf, &sxy[2], &sxy[3]);
-		drawline(fdf, sxy, curr->color, right->color);
+		drawline(fdf, sxy, resolve_pixel_color(*fdf, curr),
+				resolve_pixel_color(*fdf, right));
 	}
 	if (curr && below)
 	{
 		project_iso(curr, fdf, &sxy[0], &sxy[1]);
 		project_iso(below, fdf, &sxy[2], &sxy[3]);
-		drawline(fdf, sxy, curr->color, below->color);
-	}
-	// these are extra
-	if (below && right)
-	{
-		project_iso(below, fdf, &sxy[0], &sxy[1]);
-		project_iso(right, fdf, &sxy[2], &sxy[3]);
-		drawline(fdf, sxy, below->color, right->color);
-	}
-	if (curr && right_under)
-	{
-		project_iso(curr, fdf, &sxy[0], &sxy[1]);
-		project_iso(right_under, fdf, &sxy[2], &sxy[3]);
-		drawline(fdf, sxy, curr->color, right_under->color);
+		drawline(fdf, sxy, resolve_pixel_color(*fdf, curr),
+				resolve_pixel_color(*fdf, below));
 	}
 }
 

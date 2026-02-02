@@ -32,6 +32,8 @@ void	img_pixel_put(t_fdf *fdf, int x, int y, int color)
 	idx = get_pixel_index(fdf, x, y);
 	if (idx < 0)
 		return ;
+	if (fdf->bpp != 32)
+		color = mlx_get_color_value(fdf->mlx, color);
 	bpp = fdf->bpp / 8;
 	col = (unsigned int)color;
 	i = -1;

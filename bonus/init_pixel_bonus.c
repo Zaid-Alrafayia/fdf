@@ -31,7 +31,7 @@ t_pixel	*new_pixel(int x, int y, int z)
 	node->x = x;
 	node->y = y;
 	node->z = z;
-	node->color = 0;
+	node->color = -1;
 	node->next = NULL;
 	return (node);
 }
@@ -40,7 +40,7 @@ static int	parse_color_and_value(char *z, int *color, int *value)
 {
 	char	*comma;
 
-	*color = 0xFFFFFF;
+	*color = -1;
 	comma = ft_strchr(z, ',');
 	if (comma)
 	{
@@ -51,53 +51,40 @@ static int	parse_color_and_value(char *z, int *color, int *value)
 	return (0);
 }
 
-static int	get_color_by_height(t_fdf *fdf, int value)
-{
-	double	t;
-	double	loc;
-	int		step;
+// static int	get_color_from_height(t_fdf *fdf, int value)
+// {
+// 	int	stops[5];
+// 	double	ratio;
+// 	int	n;
+// 	int	seg;
+// 	double	local_ratio;
+// 	int	step;
+// 	int	total;
 
-	if (!fdf || fdf->z_max == fdf->z_min)
-		return (0x228B22);
-	t = (double)(value - fdf->z_min) / (double)(fdf->z_max - fdf->z_min);
-	if (t < 0.0)
-		t = 0.0;
-	if (t > 1.0)
-		t = 1.0;
-	if (t < 0.20)
-	{
-		loc = t / 0.20;
-		step = (int)(loc * 1000.0);
-		return (gradient_color(0x000080, 0x1E90FF, step, 1000));
-	}
-	if (t < 0.25)
-	{
-		loc = (t - 0.20) / 0.05;
-		step = (int)(loc * 1000.0);
-		return (gradient_color(0x1E90FF, 0xF4A460, step, 1000));
-	}
-	if (t < 0.50)
-	{
-		loc = (t - 0.25) / 0.25;
-		step = (int)(loc * 1000.0);
-		return (gradient_color(0x228B22, 0x006400, step, 1000));
-	}
-	if (t < 0.70)
-	{
-		loc = (t - 0.50) / 0.20;
-		step = (int)(loc * 1000.0);
-		return (gradient_color(0x8B7765, 0x8B4513, step, 1000));
-	}
-	if (t < 0.90)
-	{
-		loc = (t - 0.70) / 0.20;
-		step = (int)(loc * 1000.0);
-		return (gradient_color(0xA9A9A9, 0x808080, step, 1000));
-	}
-	loc = (t - 0.90) / 0.10;
-	step = (int)(loc * 1000.0);
-	return (gradient_color(0xFFFFFF, 0xFFFFFF, step, 1000));
-}
+// 	stops[0] = 0x0000FF; /* blue */
+// 	stops[1] = 0x800080; /* purple */
+// 	stops[2] = 0xFFFF00; /* yellow */
+// 	stops[3] = 0xFFBA00; /* orange */	
+// 	stops[4] = 0xFF0000; /* red */
+
+// 	if (fdf->z_max == fdf->z_min)
+// 		return (stops[4]);
+// 	ratio = (double)(value - fdf->z_min) / (double)(fdf->z_max - fdf->z_min);
+// 	if (ratio < 0.0)
+// 		ratio = 0.0;
+// 	if (ratio > 1.0)
+// 		ratio = 1.0;
+// 	n = 5; /* number of stops */
+// 	seg = (int)(ratio * (n - 1));
+// 	if (seg >= n - 1)
+// 		return (stops[n - 1]);
+// 	local_ratio = (ratio - ((double)seg / (n - 1))) * (n - 1);
+// 	step = (int)(local_ratio * 1000.0);
+// 	total = 1000;
+// 	return (gradient_color(stops[seg], stops[seg + 1], step, total));
+// }
+
+
 
 static int	append_pixel(t_pixel **row, t_pixel *tmp)
 {
@@ -131,9 +118,6 @@ int	add_to_back(t_fdf *fdf, t_pixel **row, int x, int y, char *z)
 	tmp = new_pixel(x, y, value);
 	if (!tmp)
 		return (1);
-	if (color == 0xFFFFFF)
-		tmp->color = get_color_by_height(fdf, value);
-	else
-		tmp->color = color;
+	tmp->color = color;
 	return (append_pixel(row, tmp));
 }
